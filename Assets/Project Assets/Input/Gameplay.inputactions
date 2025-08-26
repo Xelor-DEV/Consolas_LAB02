@@ -3,7 +3,7 @@
     "name": "Gameplay",
     "maps": [
         {
-            "name": "Gameplay",
+            "name": "Driver",
             "id": "66676863-d362-4add-ba11-c7b27c1d2650",
             "actions": [
                 {
@@ -14,15 +14,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
-                },
-                {
-                    "name": "Shoot",
-                    "type": "Button",
-                    "id": "f32e5d0b-78f2-4dc9-bb3c-65fa38af1d9a",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -36,11 +27,48 @@
                     "action": "Movement",
                     "isComposite": false,
                     "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Gunner",
+            "id": "620e89c0-cb1d-49e6-a5c2-e189b0015476",
+            "actions": [
+                {
+                    "name": "Rotation",
+                    "type": "Value",
+                    "id": "84497956-5b2f-4538-8232-f0b40239905a",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Shoot",
+                    "type": "Button",
+                    "id": "34f9c573-8835-48c0-b47c-d7ee1121bc22",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "daa82805-f9c1-4fe4-aa58-66dae33f4d48",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepads",
+                    "action": "Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "d820511e-dc2d-431d-a6c7-9e7802ac2a97",
-                    "path": "<Gamepad>/buttonEast",
+                    "id": "30d2c9d3-96bc-4292-8fc2-2f837fb2f00d",
+                    "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepads",
