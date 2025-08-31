@@ -2,7 +2,10 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public float speed = 20f; // Velocidad del proyectil
+    [Header("Config")]
+    [SerializeField] private float speed = 20f; // Velocidad del proyectil
+    [SerializeField] private string objective;
+    [SerializeField] private float damage;
 
     private Rigidbody rb;
 
@@ -15,7 +18,13 @@ public class Bullet : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "ground")
+        if (other.tag == objective)
+        {
+            HealthManager health = other.GetComponent<HealthManager>();
+            health.Damage(damage);
+            Destroy(gameObject);
+        }
+        else if (other.tag == "ground")
         {
             Destroy(gameObject);
         }

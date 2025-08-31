@@ -3,20 +3,44 @@ using UnityEngine.InputSystem;
 
 public class TankMovement : MonoBehaviour
 {
+    [Header("Movement Settings")]
     public float moveSpeed = 5f;
     public float turnSpeed = 30f;
-    private Vector2 _moveInput;
+
+    [Header("Component References")]
+    [SerializeField] private Rigidbody tankRigidbody;
+
+    private Vector2 moveInput;
+
+    private void Awake()
+    {
+        if (tankRigidbody == null)
+        {
+            tankRigidbody = GetComponent<Rigidbody>();
+        }
+    }
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        _moveInput = context.ReadValue<Vector2>();
+        moveInput = context.ReadValue<Vector2>();
     }
 
     void FixedUpdate()
     {
-        // Movimiento hacia adelante/atrás
-        transform.Translate(Vector3.forward * _moveInput.y * moveSpeed * Time.fixedDeltaTime);
-        // Rotación izquierda/derecha
-        transform.Rotate(Vector3.up, _moveInput.x * turnSpeed * Time.fixedDeltaTime);
+        HandleMovement();
+        HandleRotation();
+    }
+
+    private void HandleMovement()
+    {
+        Vector3 moveDirection = transform.forward * (moveInput.y * moveSpeed) * Time.fixedDeltaTime;
+        tankRigidbody.MovePosition(tankRigidbody.position + moveDirection);
+    }
+
+    private void HandleRotation()
+    {
+        float rotation = (moveInput.x * turnSpeed) * Time.fixedDeltaTime;
+        Quaternion turnRotation = Quaternion.Euler(0f, rotation, 0f);
+        tankRigidbody.MoveRotation(tankRigidbody.rotation * turnRotation);
     }
 }

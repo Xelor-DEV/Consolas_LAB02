@@ -1,0 +1,29 @@
+{
+    "items": [
+        {
+            "globalId": "GlobalObjectId_V1-2-64352bf57930ef14dbc850fd9d7a49f9-720681810-0",
+            "source": "builtin",
+            "value": "d_Rigidbody Icon"
+        },
+        {
+            "globalId": "GlobalObjectId_V1-2-64352bf57930ef14dbc850fd9d7a49f9-15727671627063964016-162155718",
+            "source": "builtin",
+            "value": "d_Tilemap Icon"
+        },
+        {
+            "globalId": "GlobalObjectId_V1-2-64352bf57930ef14dbc850fd9d7a49f9-1144044377-0",
+            "source": "builtin",
+            "value": "d_Transform Icon"
+        },
+        {
+            "globalId": "GlobalObjectId_V1-2-64352bf57930ef14dbc850fd9d7a49f9-919132149220806187-0",
+            "source": "builtin",
+            "value": "d_Transform Icon"
+        },
+        {
+            "globalId": "GlobalObjectId_V1-2-64352bf57930ef14dbc850fd9d7a49f9-919132148390057144-0",
+            "source": "builtin",
+            "value": "d_Transform Icon"
+        }
+    ]
+}

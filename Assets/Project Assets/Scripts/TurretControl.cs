@@ -3,21 +3,23 @@ using UnityEngine.InputSystem;
 
 public class TurretControl : MonoBehaviour
 {
-    public float horizontalSpeed = 50f;
-    public float verticalSpeed = 30f;
-    private Vector2 _aimInput;
+    [Header("Rotation Settings")]
+    [SerializeField] private float rotationSpeed = 50f;
 
-    public GameObject aimPoint;
-    public GameObject bullet;
+    [Header("References")]
+    [SerializeField] private Transform muzzle;
+    [SerializeField] private GameObject bulletPrefab;
 
-    public void OnAim(InputAction.CallbackContext context)
+    private Vector2 aimInput;
+
+    public void OnRotate(InputAction.CallbackContext context)
     {
-        _aimInput = context.ReadValue<Vector2>();
+        aimInput = context.ReadValue<Vector2>();
     }
 
     public void OnShoot(InputAction.CallbackContext context)
     {
-        if(context.performed == true)
+        if (context.performed == true)
         {
             Shoot();
         }
@@ -25,13 +27,11 @@ public class TurretControl : MonoBehaviour
 
     public void Shoot()
     {
-        Instantiate(bullet,aimPoint.transform.position, aimPoint.transform.rotation);
+        Instantiate(bulletPrefab, muzzle.position, muzzle.rotation);
     }
+
     void Update()
     {
-        // Rotación horizontal de la torreta
-        transform.Rotate(Vector3.up, _aimInput.x * horizontalSpeed * Time.deltaTime, Space.Self);
-        // Rotación vertical del cañón (ajusta según estructura)
-        // Ej: transform.Rotate(Vector3.right, _aimInput.y * verticalSpeed * Time.deltaTime, Space.Self);
+        transform.Rotate(Vector3.forward, aimInput.x * rotationSpeed * Time.deltaTime, Space.Self);
     }
 }
