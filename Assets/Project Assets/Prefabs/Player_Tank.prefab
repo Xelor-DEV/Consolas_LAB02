@@ -69,7 +69,7 @@ MonoBehaviour:
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
-  m_FillMethod: 0
+  m_FillMethod: 1
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
@@ -121,6 +121,7 @@ GameObject:
   - component: {fileID: 6445958175181066601}
   - component: {fileID: 6977308969942354140}
   - component: {fileID: 7107971133046230579}
+  - component: {fileID: 293087421919425095}
   m_Layer: 0
   m_Name: Player_Tank
   m_TagString: Player
@@ -316,6 +317,24 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &293087421919425095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 990426150468812715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90fbd134772feed42a0c55c7b0ac0349, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  driverInput: {fileID: 8865292865174568463}
+  gunnerInput: {fileID: 8974486094656539583}
+  driverCamera: {fileID: 286426253024302595}
+  gunnerCamera: {fileID: 4273477557485449229}
+  healthBar: {fileID: 617370597523756341}
+  tankNumber: 0
 --- !u!1 &1957123888689146893
 GameObject:
   m_ObjectHideFlags: 0
@@ -1046,11 +1065,11 @@ RectTransform:
   - {fileID: 5609034103231219588}
   m_Father: {fileID: 120288131540421689}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 59, y: -55}
-  m_SizeDelta: {x: 669.986, y: 131.38}
-  m_Pivot: {x: 0, y: 1}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 46, y: -0.0000038147}
+  m_SizeDelta: {x: 91.511, y: 456.93}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &470849347834145945
 CanvasRenderer:
   m_ObjectHideFlags: 0

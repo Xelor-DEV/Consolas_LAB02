@@ -1,92 +1,186 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Utilities;
+using System.Collections.Generic;
+using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
-    /*
-    [Header("References")]
-    public PlayerInputManager inputManager;
-    private GameObject currentTank;
+    [Header("Data Configuration")]
+    [SerializeField] private PlayerDataSO playerData;
 
-    [Header("Player Configuration")]
-    private int currentPlayerCount = 0;
+    [Header("Tank Prefabs")]
+    [SerializeField] private GameObject tankPrefab;
 
-    public void OnPlayerJoined(PlayerInput playerInput)
+    [Header("Spawn Points")]
+    [SerializeField] private Transform[] spawnPoints;
+
+    private List<TankManager> activeTanks = new List<TankManager>();
+    private ReadOnlyArray<InputDevice> allDevices;
+
+    // Singleton pattern para fácil acceso
+    public static GameManager Instance { get; private set; }
+
+    private void Awake()
     {
-        currentPlayerCount++;
-
-        // Los Impares seran los drivers y los Pares seran los gunners
-        if (currentPlayerCount % 2 != 0)
+        if (Instance == null)
         {
-            ConfigureDriver(playerInput);
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
-            ConfigureGunner(playerInput);
-        }
-
-        if (currentPlayerCount >= inputManager.maxPlayerCount)
-        {
-            inputManager.DisableJoining();
+            Destroy(gameObject);
         }
     }
 
-    private void ConfigureDriver(PlayerInput playerInput)
+    private void Start()
     {
-        playerInput.SwitchCurrentActionMap("Driver");
-
-        // Configuramos el control de movimiento
-        TankMovement movement = currentTank.GetComponent<TankMovement>();
-        if (movement != null)
-        {
-            movement.SetDriverInput(playerInput);
-        }
-
-        // Activamos la cámara del conductor
-        // (asumiendo que tienes una referencia a esta cámara)
-        Camera driverCamera = currentTank.transform.Find("CámaraConductor").GetComponent<Camera>();
-        driverCamera.enabled = true;
+        InitializeGame();
     }
 
-    private void ConfigureGunner(PlayerInput playerInput)
+    private void InitializeGame()
     {
-        playerInput.SwitchCurrentActionMap("Gunner");
-
-        // Configuramos el control de la torreta
-        TurretControl turret = currentTank.GetComponentInChildren<TurretControl>();
-        if (turret != null)
-        {
-            turret.SetGunnerInput(playerInput);
-        }
-
-        // Activamos la cámara del artillero
-        Camera gunnerCamera = currentTank.transform.Find("CámaraArtillero").GetComponent<Camera>();
-        gunnerCamera.enabled = true;
+        SpawnTanksBasedOnPlayerData();
+        AssignDevicesToTanks();
     }
 
-    private void SetupSplitScreen()
+    private void SpawnTanksBasedOnPlayerData()
     {
-        // Configuración automática de pantalla dividida
-        if (currentPlayerCount == 2)
+        // Determinar cuántos tanques únicos tenemos en los datos
+        var uniqueTankNumbers = playerData.playerSelections
+            .Select(ps => ps.tankNumber)
+            .Distinct()
+            .ToList();
+
+        int totalTanks = uniqueTankNumbers.Count;
+
+        for (int i = 0; i < totalTanks; i++)
         {
-            // Para 2 jugadores: split vertical
-            Camera[] cameras = currentTank.GetComponentsInChildren<Camera>();
-            if (cameras.Length >= 2)
+            SpawnTank(uniqueTankNumbers[i], totalTanks, i);
+        }
+
+        Debug.Log($"Se crearon {totalTanks} tanques para {playerData.playerSelections.Count} jugadores");
+    }
+
+    private void SpawnTank(int tankNumber, int totalTanks, int tankIndex)
+    {
+        if (tankPrefab == null)
+        {
+            Debug.LogError("¡No hay prefab de tanque asignado!");
+            return;
+        }
+
+        // Seleccionar punto de spawn (rotar si hay más tanques que puntos de spawn)
+        Transform spawnPoint = spawnPoints[(tankNumber - 1) % spawnPoints.Length];
+
+        // Instanciar tanque
+        GameObject tankObj = Instantiate(tankPrefab, spawnPoint.position, spawnPoint.rotation);
+        TankManager tankManager = tankObj.GetComponent<TankManager>();
+
+        if (tankManager != null)
+        {
+            tankManager.InitializeTank(tankNumber, totalTanks, tankIndex);
+            activeTanks.Add(tankManager);
+        }
+        else
+        {
+            Debug.LogError("El prefab del tanque no tiene componente TankManager");
+        }
+    }
+
+    private void AssignDevicesToTanks()
+    {
+        allDevices = InputSystem.devices;
+
+        foreach (var selection in playerData.playerSelections)
+        {
+            // Encontrar el dispositivo por su ID
+            InputDevice device = allDevices.FirstOrDefault(d => d.deviceId == selection.deviceId);
+
+            if (device == null)
             {
-                cameras[0].rect = new Rect(0, 0, 0.5f, 1); // Mitad izquierda
-                cameras[1].rect = new Rect(0.5f, 0, 0.5f, 1); // Mitad derecha
+                Debug.LogWarning($"Dispositivo no encontrado para Player {selection.playerNumber}");
+                continue;
+            }
+
+            // Encontrar el tanque correspondiente
+            TankManager tank = activeTanks.FirstOrDefault(t => t.TankNumber == selection.tankNumber);
+
+            if (tank != null)
+            {
+                if (selection.isDriver)
+                {
+                    tank.AssignDriver(device);
+                }
+                else
+                {
+                    tank.AssignGunner(device);
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"Tanque {selection.tankNumber} no encontrado para Player {selection.playerNumber}");
             }
         }
-        // Puedes agregar más configuraciones para 3-4 jugadores
     }
 
-    public void OnPlayerLeft(PlayerInput playerInput)
+    public void CheckAllTanksManned()
     {
-        currentPlayerCount--;
-        playerInputManager.EnableJoining();
+        bool allManned = activeTanks.All(tank => tank.IsFullyManned());
 
-        // Reconfiguramos las cámaras
-        SetupSplitScreen();
+        if (allManned)
+        {
+            Debug.Log("¡Todos los tanques están completamente equipados! Iniciando juego...");
+        }
+        else
+        {
+            Debug.Log("Algunos tanques no tienen tripulación completa");
+        }
     }
-    */
+
+    // Manejar cambios de dispositivos
+    private void OnEnable()
+    {
+        InputSystem.onDeviceChange += OnDeviceChange;
+    }
+
+    private void OnDisable()
+    {
+        InputSystem.onDeviceChange -= OnDeviceChange;
+    }
+
+    private void OnDeviceChange(InputDevice device, InputDeviceChange change)
+    {
+        // Reconectar dispositivos si se reconectan
+        if (change == InputDeviceChange.Reconnected)
+        {
+            ReconnectDevice(device);
+        }
+    }
+
+    private void ReconnectDevice(InputDevice device)
+    {
+        // Buscar si este dispositivo estaba asignado a algún tanque
+        foreach (var selection in playerData.playerSelections)
+        {
+            if (selection.deviceId == device.deviceId)
+            {
+                TankManager tank = activeTanks.FirstOrDefault(t => t.TankNumber == selection.tankNumber);
+
+                if (tank != null)
+                {
+                    if (selection.isDriver)
+                    {
+                        tank.AssignDriver(device);
+                    }
+                    else
+                    {
+                        tank.AssignGunner(device);
+                    }
+                }
+                break;
+            }
+        }
+    }
 }
