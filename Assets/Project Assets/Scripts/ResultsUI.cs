@@ -8,10 +8,17 @@ public class ResultsUI : MonoBehaviour
     public TMP_Text killsText;
     public TMP_Text timeText;
 
+    [SerializeField] private GameResultSO results;
+
     [Header("Messages")]
     public string timeOutMessage = "Time's Up! Not enough kills.";
     public string enoughKillsMessage = "Mission Accomplished!";
     public string extraKillsMessage = "Excellent Performance!";
+
+    private void Start()
+    {
+        DisplayResults(results);
+    }
 
     public void DisplayResults(GameResultSO result)
     {

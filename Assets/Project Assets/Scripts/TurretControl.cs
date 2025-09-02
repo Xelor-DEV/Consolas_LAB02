@@ -9,6 +9,7 @@ public class TurretControl : MonoBehaviour
     [Header("References")]
     [SerializeField] private Transform muzzle;
     [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private TankManager tankManager;
 
     private Vector2 aimInput;
 
@@ -27,11 +28,13 @@ public class TurretControl : MonoBehaviour
 
     public void Shoot()
     {
+        if (tankManager?.IsDisabled == true) return;
         Instantiate(bulletPrefab, muzzle.position, muzzle.rotation);
     }
 
     void Update()
     {
+        if (tankManager?.IsDisabled == true) return;
         transform.Rotate(Vector3.forward, aimInput.x * rotationSpeed * Time.deltaTime, Space.Self);
     }
 }

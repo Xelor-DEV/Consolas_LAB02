@@ -120,8 +120,8 @@ GameObject:
   - component: {fileID: 4614093090384357235}
   - component: {fileID: 6445958175181066601}
   - component: {fileID: 6977308969942354140}
-  - component: {fileID: 7107971133046230579}
   - component: {fileID: 293087421919425095}
+  - component: {fileID: 8558702046288440040}
   m_Layer: 0
   m_Name: Player_Tank
   m_TagString: Player
@@ -272,51 +272,7 @@ MonoBehaviour:
   moveSpeed: 5
   turnSpeed: 30
   tankRigidbody: {fileID: 4614093090384357235}
---- !u!114 &7107971133046230579
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 990426150468812715}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 321e417e28ebd324da93bf20eb52dbbc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  healthBar: {fileID: 1841522489913268320}
-  currentHealth: 30
-  maxHealth: 30
-  OnDeath:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7107971133046230579}
-        m_TargetAssemblyTypeName: HealthManager, Assembly-CSharp
-        m_MethodName: Death
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnDamage:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7107971133046230579}
-        m_TargetAssemblyTypeName: HealthManager, Assembly-CSharp
-        m_MethodName: UpdateHealthBar
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+  tankManager: {fileID: 293087421919425095}
 --- !u!114 &293087421919425095
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -334,7 +290,54 @@ MonoBehaviour:
   driverCamera: {fileID: 286426253024302595}
   gunnerCamera: {fileID: 4273477557485449229}
   healthBar: {fileID: 617370597523756341}
+  tankMovement: {fileID: 6977308969942354140}
+  turretControl: {fileID: 1102337919903076160}
   tankNumber: 0
+--- !u!114 &8558702046288440040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 990426150468812715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0dd75324a8149c74ebe28433003932a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthBar: {fileID: 1841522489913268320}
+  currentHealth: 15
+  maxHealth: 15
+  OnDeath:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8558702046288440040}
+        m_TargetAssemblyTypeName: PlayerHealth, Assembly-CSharp
+        m_MethodName: Death
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnDamage:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8558702046288440040}
+        m_TargetAssemblyTypeName: PlayerHealth, Assembly-CSharp
+        m_MethodName: UpdateHealthBar
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1957123888689146893
 GameObject:
   m_ObjectHideFlags: 0
@@ -440,6 +443,7 @@ MonoBehaviour:
   rotationSpeed: 50
   muzzle: {fileID: 3064605995074559733}
   bulletPrefab: {fileID: 6555574501551586524, guid: f8b2ad6c5c7c30e4fa37f85c35dc5813, type: 3}
+  tankManager: {fileID: 293087421919425095}
 --- !u!114 &8974486094656539583
 MonoBehaviour:
   m_ObjectHideFlags: 0

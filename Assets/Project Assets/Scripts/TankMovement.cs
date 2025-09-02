@@ -9,6 +9,7 @@ public class TankMovement : MonoBehaviour
 
     [Header("Component References")]
     [SerializeField] private Rigidbody tankRigidbody;
+    [SerializeField] private TankManager tankManager;
 
     private Vector2 moveInput;
 
@@ -27,6 +28,7 @@ public class TankMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (tankManager?.IsDisabled == true) return;
         HandleMovement();
         HandleRotation();
     }

@@ -9,9 +9,12 @@ public class TankManager : MonoBehaviour
     [SerializeField] private Camera driverCamera;
     [SerializeField] private Camera gunnerCamera;
     [SerializeField] private RectTransform healthBar;
+    [SerializeField] private TankMovement tankMovement;
+    [SerializeField] private TurretControl turretControl;
 
     [Header("Configuración")]
     [SerializeField] private int tankNumber;
+    private bool isDisabled = false;
 
     private InputDevice driverDevice;
     private InputDevice gunnerDevice;
@@ -182,8 +185,50 @@ public class TankManager : MonoBehaviour
         return driverDevice != null && gunnerDevice != null;
     }
 
+    public void DisableTankControls()
+    {
+        isDisabled = true;
+
+        if (tankMovement != null)
+        {
+            tankMovement.enabled = false;
+        }
+
+        if (turretControl != null)
+        {
+            turretControl.enabled = false;
+        }
+
+        CheckAllTanksDisabled();
+    }
+
+
+    private void CheckAllTanksDisabled()
+    {
+        // Buscar todos los tanques en escena
+        TankManager[] allTanks = GameManager.Instance.activeTanks.ToArray();
+        bool allDisabled = true;
+
+        foreach (TankManager tank in allTanks)
+        {
+            if (!tank.isDisabled)
+            {
+                allDisabled = false;
+                break;
+            }
+        }
+
+        if (allDisabled)
+        {
+            // Activar derrota
+            GameManager.Instance.LoseGame();
+        }
+    }
+
+
     // Propiedades para acceso externo
     public int TankNumber => tankNumber;
+    public bool IsDisabled => isDisabled;
     public InputDevice DriverDevice => driverDevice;
     public InputDevice GunnerDevice => gunnerDevice;
     public PlayerInput DriverInput => driverInput;

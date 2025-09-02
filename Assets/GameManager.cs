@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
     public UnityEvent OnWin;
     public UnityEvent OnLose;
 
-    private List<TankManager> activeTanks = new List<TankManager>();
+    public List<TankManager> activeTanks = new List<TankManager>();
     private ReadOnlyArray<InputDevice> allDevices;
 
     // Singleton pattern para fácil acceso
@@ -88,7 +88,7 @@ public class GameManager : MonoBehaviour
         OnWin.Invoke();
     }
 
-    private void LoseGame()
+    public void LoseGame()
     {
         UpdateGameResult(VictoryCondition.TimeOut);
         OnLose.Invoke();
@@ -214,7 +214,6 @@ public class GameManager : MonoBehaviour
 
     private void OnDeviceChange(InputDevice device, InputDeviceChange change)
     {
-        // Reconectar dispositivos si se reconectan
         if (change == InputDeviceChange.Reconnected)
         {
             ReconnectDevice(device);

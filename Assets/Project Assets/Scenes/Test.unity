@@ -876,6 +876,7 @@ MonoBehaviour:
           m_StringArgument: Results
           m_BoolArgument: 0
         m_CallState: 2
+  activeTanks: []
 --- !u!4 &427606117
 Transform:
   m_ObjectHideFlags: 0
@@ -2385,7 +2386,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timerText: {fileID: 1329124114}
   killsText: {fileID: 1496312261}
-  gameTime: 180
+  gameTime: 300
 --- !u!1001 &1071184476
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3156,11 +3157,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 3711617342812610382, guid: c9243a84cb6e80044b925b2f3cf8b302, type: 3}
-  spawnInterval: 30
+  spawnInterval: 15
   spawnRadius: 18
+  initialSpawnCount: 10
   checkRadius: 18
   maxAttempts: 30
-  requiredKills: 20
+  requiredKills: 10
   currentKills: 0
   OnKillsUpdated:
     m_PersistentCalls:

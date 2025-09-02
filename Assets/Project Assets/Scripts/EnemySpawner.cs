@@ -9,6 +9,8 @@ public class EnemySpawner : MonoBehaviour
     public GameObject enemyPrefab;
     public float spawnInterval = 5f; // Tiempo entre spawns (segundos)
     public float spawnRadius = 10f; // Radio del área de spawn
+    public int initialSpawnCount = 1; // Cantidad inicial de enemigos
+
 
     [Header("NavMesh Config")]
     public float checkRadius = 10f; // Radio para buscar puntos en NavMesh
@@ -27,10 +29,17 @@ public class EnemySpawner : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(SpawnEnemies());
+        // Generar enemigos iniciales
+        for (int i = 0; i < initialSpawnCount; i++)
+        {
+            SpawnSingleEnemy();
+        }
+
+        // Iniciar spawn periódico
+        StartCoroutine(SpawnEnemiesRoutine());
     }
 
-    IEnumerator SpawnEnemies()
+    void SpawnSingleEnemy()
     {
         Vector3 spawnPoint = GetRandomNavMeshPoint();
 
@@ -47,11 +56,15 @@ public class EnemySpawner : MonoBehaviour
         {
             Debug.LogWarning("No se pudo encontrar un punto válido en el NavMesh para spawnear");
         }
-
-        yield return new WaitForSeconds(spawnInterval);
-
-        StartCoroutine(SpawnEnemies());
     }
+
+    IEnumerator SpawnEnemiesRoutine()
+    {
+        yield return new WaitForSeconds(spawnInterval);
+        SpawnSingleEnemy();
+        SpawnEnemiesRoutine();
+    }
+
 
     Vector3 GetRandomNavMeshPoint()
     {
