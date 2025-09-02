@@ -4,6 +4,14 @@ using UnityEngine.InputSystem.Utilities;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
+public enum MaxPlayersOption
+{
+    Max2Players,
+    Max4Players,
+    Max6Players,
+    AllDevices
+}
+
 public class PlayerManager : MonoBehaviour
 {
     [Header("Input Configuration")]
@@ -16,6 +24,9 @@ public class PlayerManager : MonoBehaviour
     [Header("UI Configuration")]
     [SerializeField] private RectTransform container;
     [SerializeField] private RectTransform canvas;
+
+    [Header("Player Configuration")]
+    [SerializeField] private PlayerConfigSO playerConfig;
 
     [Header("Player Data")]
     [SerializeField] private PlayerDataSO playerDataSO;
@@ -81,7 +92,13 @@ public class PlayerManager : MonoBehaviour
             }
         }
 
-        // Asegurar número par de dispositivos (mínimo 2)
+        int maxPlayers = GetMaxPlayers();
+
+        if (maxPlayers > 0 && compatibleDevices.Count > maxPlayers)
+        {
+            compatibleDevices.RemoveRange(maxPlayers, compatibleDevices.Count - maxPlayers);
+        }
+
         if (compatibleDevices.Count % 2 != 0 && compatibleDevices.Count > 0)
         {
             compatibleDevices.RemoveAt(compatibleDevices.Count - 1);
@@ -95,6 +112,23 @@ public class PlayerManager : MonoBehaviour
 
         totalPlayers = compatibleDevices.Count;
         Debug.Log($"Jugadores detectados: {totalPlayers}");
+    }
+
+    private int GetMaxPlayers()
+    {
+        if (playerConfig == null) return 0;
+
+        switch (playerConfig.maxPlayers)
+        {
+            case MaxPlayersOption.Max2Players:
+                return 2;
+            case MaxPlayersOption.Max4Players:
+                return 4;
+            case MaxPlayersOption.Max6Players:
+                return 6;
+            default:
+                return 0; // 0 = sin límite
+        }
     }
 
     private void CreateTankSelectors()

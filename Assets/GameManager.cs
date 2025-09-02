@@ -1,8 +1,9 @@
-using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Utilities;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Utilities;
 
 public class GameManager : MonoBehaviour
 {
@@ -14,6 +15,18 @@ public class GameManager : MonoBehaviour
 
     [Header("Spawn Points")]
     [SerializeField] private Transform[] spawnPoints;
+
+    [Header("UI Manager")]
+    public UIManager uiManager;
+
+    [Header("Enemy Spawner")]
+    public EnemySpawner enemySpawner;
+
+    [Header("Game Result")]
+    public GameResultSO gameResultSO;
+
+    public UnityEvent OnWin;
+    public UnityEvent OnLose;
 
     private List<TankManager> activeTanks = new List<TankManager>();
     private ReadOnlyArray<InputDevice> allDevices;
@@ -37,6 +50,55 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         InitializeGame();
+        SetupEventListeners();
+    }
+
+    private void SetupEventListeners()
+    {
+        enemySpawner.OnKillsUpdated.AddListener(UpdateKillsUI);
+        enemySpawner.OnVictoryConditionMet.AddListener(OnVictoryConditionMet);
+        UpdateKillsUI(enemySpawner.currentKills);
+    }
+
+    private void UpdateKillsUI(int currentKills)
+    {
+        uiManager.UpdateKillsDisplay(currentKills, enemySpawner.requiredKills);
+    }
+
+    public void OnTimeUp()
+    {
+        if (enemySpawner.currentKills >= enemySpawner.requiredKills)
+        {
+            WinGame();
+        }
+        else
+        {
+            LoseGame();
+        }
+    }
+
+    private void OnVictoryConditionMet()
+    {
+        WinGame();
+    }
+
+    private void WinGame()
+    {
+        UpdateGameResult(VictoryCondition.ExtraKills);
+        OnWin.Invoke();
+    }
+
+    private void LoseGame()
+    {
+        UpdateGameResult(VictoryCondition.TimeOut);
+        OnLose.Invoke();
+    }
+
+    private void UpdateGameResult(VictoryCondition condition)
+    {
+        gameResultSO.victoryCondition = condition;
+        gameResultSO.enemiesKilled = enemySpawner.currentKills;
+        gameResultSO.timeElapsed = uiManager.GetElapsedTime();
     }
 
     private void InitializeGame()

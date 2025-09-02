@@ -20,6 +20,9 @@ public class EnemyAI : MonoBehaviour
     public Transform gunMuzzle;
     public GameObject bulletPrefab;
 
+    [Header("Death Reporting")]
+    public EnemySpawner spawner;
+
     [Header("Gizmos Settings")]
     public bool showGizmos = true;
     public Color wanderRadiusColor = Color.yellow;

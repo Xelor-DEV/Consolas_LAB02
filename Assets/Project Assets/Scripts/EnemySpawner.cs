@@ -1,6 +1,7 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
-using System.Collections;
+using UnityEngine.Events;
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -11,7 +12,15 @@ public class EnemySpawner : MonoBehaviour
 
     [Header("NavMesh Config")]
     public float checkRadius = 10f; // Radio para buscar puntos en NavMesh
-    public int maxAttempts = 30; 
+    public int maxAttempts = 30;
+
+    [Header("Victory Conditions")]
+    public int requiredKills = 10;
+    public int currentKills = 0;
+
+    [Header("Events")]
+    public UnityEvent<int> OnKillsUpdated;
+    public UnityEvent OnVictoryConditionMet;
 
     [Header("Gizmos")]
     [SerializeField] private bool showGizmos = true;
@@ -27,7 +36,12 @@ public class EnemySpawner : MonoBehaviour
 
         if (spawnPoint != Vector3.zero)
         {
-            Instantiate(enemyPrefab, spawnPoint, enemyPrefab.transform.rotation);
+            GameObject enemy = Instantiate(enemyPrefab, spawnPoint, enemyPrefab.transform.rotation);
+            EnemyAI enemyAI = enemy.GetComponent<EnemyAI>();
+            if (enemyAI != null)
+            {
+                enemyAI.spawner = this;
+            }
         }
         else
         {
@@ -53,6 +67,17 @@ public class EnemySpawner : MonoBehaviour
         }
 
         return Vector3.zero;
+    }
+
+    public void ReportEnemyDeath()
+    {
+        currentKills++;
+        OnKillsUpdated?.Invoke(currentKills);
+
+        if (currentKills >= requiredKills)
+        {
+            OnVictoryConditionMet?.Invoke();
+        }
     }
 
     private void OnDrawGizmos()

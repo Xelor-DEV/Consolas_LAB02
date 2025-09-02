@@ -860,8 +860,8 @@ PlayerSettings:
   editorAssembliesCompatibilityLevel: 1
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: Consolas_LAB02
-  metroPackageVersion: 
+  metroPackageName: ConsolasLAB02
+  metroPackageVersion: 1.0.0.0
   metroCertificatePath: Assets/WSATestCertificate.pfx
   metroCertificatePassword: 
   metroCertificateSubject: DefaultCompany
@@ -869,7 +869,7 @@ PlayerSettings:
   metroCertificateNotAfter: 0072d46ecc35dd01
   metroApplicationDescription: Consolas_LAB02
   wsaImages: {}
-  metroTileShortName: 
+  metroTileShortName: Consolas_LAB02
   metroTileShowName: 0
   metroMediumTileShowName: 0
   metroLargeTileShowName: 0

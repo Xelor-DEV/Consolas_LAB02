@@ -497,7 +497,7 @@ GameObject:
   - component: {fileID: 8579066227416466263}
   - component: {fileID: 7015829910718755942}
   - component: {fileID: 9106564929609172468}
-  - component: {fileID: -591457545588703271}
+  - component: {fileID: -2500078910511128698}
   m_Layer: 0
   m_Name: EnemyRobot
   m_TagString: Enemy
@@ -613,11 +613,12 @@ MonoBehaviour:
   fireRate: 3
   gunMuzzle: {fileID: 2835401368510659627}
   bulletPrefab: {fileID: 1243603124363673662, guid: b3d4e1e3bd23a4b46b7d49b7078bb746, type: 3}
+  spawner: {fileID: 0}
   showGizmos: 1
   wanderRadiusColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   detectionRadiusColor: {r: 1, g: 0, b: 0, a: 1}
   attackRangeColor: {r: 1, g: 0, b: 1, a: 1}
---- !u!114 &-591457545588703271
+--- !u!114 &-2500078910511128698
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -626,7 +627,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3711617342812610382}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 321e417e28ebd324da93bf20eb52dbbc, type: 3}
+  m_Script: {fileID: 11500000, guid: 6a8da2b571fb01548b87d592627f0267, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   healthBar: {fileID: 2342451859281235966}
@@ -635,8 +636,8 @@ MonoBehaviour:
   OnDeath:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: -591457545588703271}
-        m_TargetAssemblyTypeName: HealthManager, Assembly-CSharp
+      - m_Target: {fileID: -2500078910511128698}
+        m_TargetAssemblyTypeName: EnemyHealth, Assembly-CSharp
         m_MethodName: Death
         m_Mode: 1
         m_Arguments:
@@ -650,8 +651,8 @@ MonoBehaviour:
   OnDamage:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: -591457545588703271}
-        m_TargetAssemblyTypeName: HealthManager, Assembly-CSharp
+      - m_Target: {fileID: -2500078910511128698}
+        m_TargetAssemblyTypeName: EnemyHealth, Assembly-CSharp
         m_MethodName: UpdateHealthBar
         m_Mode: 1
         m_Arguments:
@@ -662,6 +663,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  enemyAI: {fileID: 9106564929609172468}
 --- !u!1 &3814833475454804427
 GameObject:
   m_ObjectHideFlags: 0
