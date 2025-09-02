@@ -335,6 +335,10 @@ MonoBehaviour:
   gunnerCamera: {fileID: 4273477557485449229}
   healthBar: {fileID: 617370597523756341}
   tankNumber: 0
+  launchPoint: {fileID: 0}
+  projectileSpeed: 30
+  trajectoryResolution: 30
+  trajectoryDuration: 2
 --- !u!1 &1957123888689146893
 GameObject:
   m_ObjectHideFlags: 0
