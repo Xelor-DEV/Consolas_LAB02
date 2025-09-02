@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -18,7 +19,74 @@ public class TankManager : MonoBehaviour
 
     private InputDevice driverDevice;
     private InputDevice gunnerDevice;
+    [Header("Trayectoria de Proyectil")]
+    [SerializeField] private Transform launchPoint;
+    [SerializeField] private float projectileSpeed = 30f;
+    [SerializeField] private int trajectoryResolution = 30;
+    [SerializeField] private float trajectoryDuration = 2f;
 
+    private LineRenderer trajectoryLine;
+    private void Awake()
+    {
+        SetupLaunchPoint();
+        SetupTrajectoryLine();
+    }
+    private void SetupLaunchPoint()
+    {
+        if (launchPoint == null)
+        {
+            Transform found = transform.Find("Muzzle");
+            if (found == null)
+            {
+                // Si no está directamente como hijo, busca en toda la jerarquía
+                found = GetComponentsInChildren<Transform>()
+                    .FirstOrDefault(t => t.name == "Muzzle");
+            }
+
+            if (found != null)
+            {
+                launchPoint = found;
+            }
+            else
+            {
+                Debug.LogWarning($"[Tank {tankNumber}] No se encontró el punto de disparo 'Muzzle' en el prefab.");
+            }
+        }
+    }
+    private void SetupTrajectoryLine()
+    {
+        GameObject lineObj = new GameObject("TrajectoryLine");
+        lineObj.transform.SetParent(transform);
+        trajectoryLine = lineObj.AddComponent<LineRenderer>();
+        trajectoryLine.material = new Material(Shader.Find("Sprites/Default"));
+        trajectoryLine.widthMultiplier = 0.1f;
+        trajectoryLine.positionCount = trajectoryResolution;
+        trajectoryLine.startColor = Color.yellow;
+        trajectoryLine.endColor = Color.red;
+    }
+    private void DrawTrajectory()
+    {
+        if (trajectoryLine == null || launchPoint == null) return;
+
+        Vector3[] points = new Vector3[trajectoryResolution];
+        Vector3 startPosition = launchPoint.position;
+        Vector3 startVelocity = launchPoint.forward * projectileSpeed;
+
+        float timestep = trajectoryDuration / trajectoryResolution;
+
+        for (int i = 0; i < trajectoryResolution; i++)
+        {
+            float t = i * timestep;
+            Vector3 point = startPosition + startVelocity * t + 0.5f * Physics.gravity * t * t;
+            points[i] = point;
+        }
+
+        trajectoryLine.SetPositions(points);
+    }
+    private void Update()
+    {
+        DrawTrajectory(); // Puedes condicionar esto si solo quieres mostrarlo al apuntar
+    }
     public void InitializeTank(int tankNumber, int totalTanks, int tankIndex)
     {
         this.tankNumber = tankNumber;
