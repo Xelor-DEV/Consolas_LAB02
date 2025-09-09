@@ -4,4 +4,5 @@ using UnityEngine;
 public class PlayerConfigSO : ScriptableObject
 {
     public MaxPlayersOption maxPlayers = MaxPlayersOption.AllDevices;
+    public bool isVersusMode = false;
 }

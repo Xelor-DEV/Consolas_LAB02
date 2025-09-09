@@ -15,6 +15,9 @@ EditorBuildSettings:
     path: Assets/Project Assets/Scenes/Test.unity
     guid: 64352bf57930ef14dbc850fd9d7a49f9
   - enabled: 1
+    path: Assets/Project Assets/Scenes/Versus.unity
+    guid: 85457624fa1ca1c4f982ced0d718830d
+  - enabled: 1
     path: Assets/Project Assets/Scenes/Results.unity
     guid: fdf596308786f254394e58fc49890cf0
   m_configObjects:

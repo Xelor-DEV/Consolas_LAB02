@@ -7,10 +7,19 @@ public class HealthManager : MonoBehaviour
     [SerializeField] private Image healthBar;
     [SerializeField] private float currentHealth;
     [SerializeField] private float maxHealth;
+    [SerializeField] private bool isDead = false;
 
     [Header("Events")]
     [SerializeField] private UnityEvent OnDeath;
     [SerializeField] private UnityEvent OnDamage;
+
+    public bool IsDead
+    {
+        get 
+        { 
+            return isDead; 
+        }
+    }
 
     private void Start()
     {
@@ -29,13 +38,14 @@ public class HealthManager : MonoBehaviour
         currentHealth = Mathf.Max(currentHealth, 0);
 
         // Invocar el evento de daño
-        OnDamage.Invoke();
+        OnDamage?.Invoke();
 
         // Verificar si la vida llega a cero
         if (currentHealth <= 0)
         {
             // Invocar el evento de muerte
-            OnDeath.Invoke();
+            OnDeath?.Invoke();
+            isDead = true;
         }
     }
 

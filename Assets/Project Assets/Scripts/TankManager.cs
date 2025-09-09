@@ -1,6 +1,7 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class TankManager : MonoBehaviour
 {
@@ -12,9 +13,11 @@ public class TankManager : MonoBehaviour
     [SerializeField] private RectTransform healthBar;
     [SerializeField] private TankMovement tankMovement;
     [SerializeField] private TurretControl turretControl;
+    [SerializeField] private Image playerFrame;
 
     [Header("Configuración")]
     [SerializeField] private int tankNumber;
+    [SerializeField] private Color[] playerColors;
     private bool isDisabled = false;
 
     private InputDevice driverDevice;
@@ -30,7 +33,19 @@ public class TankManager : MonoBehaviour
     {
         SetupLaunchPoint();
         SetupTrajectoryLine();
+        ApplyTankColor();
     }
+
+    private void ApplyTankColor()
+    {
+        if (playerColors.Length > 0)
+        {
+            int index = tankNumber - 1;
+            int colorIndex = index % playerColors.Length;
+            playerFrame.color = playerColors[colorIndex];
+        }
+    }
+
     private void SetupLaunchPoint()
     {
         if (launchPoint == null)
@@ -91,11 +106,16 @@ public class TankManager : MonoBehaviour
     {
         this.tankNumber = tankNumber;
 
+        ApplyTankColor();
+
         // Configurar cámaras según el número total de tanques
         SetupSplitScreen(totalTanks, tankIndex);
 
         // Configurar barra de vida según el número total de tanques
         SetupHealthBar(totalTanks, tankIndex);
+
+        // Configurar el marco del jugador según el número total de tanques
+        SetupPlayerFrame(totalTanks, tankIndex);
 
         // Configurar audio listener (solo mantener uno)
         SetupAudioListener();
@@ -146,6 +166,69 @@ public class TankManager : MonoBehaviour
                 {
                     driverCamera.rect = new Rect(2 * thirdWidth, 0.5f, thirdWidth, 0.5f);
                     gunnerCamera.rect = new Rect(2 * thirdWidth, 0, thirdWidth, 0.5f);
+                }
+                break;
+        }
+    }
+
+    private void SetupPlayerFrame(int totalTanks, int tankIndex)
+    {
+        if (playerFrame == null) return;
+
+        // Configurar posición del marco del jugador según el número de tanques
+        switch (totalTanks)
+        {
+            case 1:
+                // Marco en la esquina inferior izquierda para un solo tanque
+                playerFrame.rectTransform.anchorMin = new Vector2(0, 0);
+                playerFrame.rectTransform.anchorMax = new Vector2(0, 0);
+                playerFrame.rectTransform.pivot = new Vector2(0, 0);
+                playerFrame.rectTransform.anchoredPosition = new Vector2(20, 20);
+                break;
+
+            case 2:
+                if (tankIndex == 0)
+                {
+                    // Marco en la esquina inferior izquierda para el primer tanque
+                    playerFrame.rectTransform.anchorMin = new Vector2(0, 0);
+                    playerFrame.rectTransform.anchorMax = new Vector2(0, 0);
+                    playerFrame.rectTransform.pivot = new Vector2(0, 0);
+                    playerFrame.rectTransform.anchoredPosition = new Vector2(20, 20);
+                }
+                else
+                {
+                    // Marco en la esquina inferior derecha para el segundo tanque
+                    playerFrame.rectTransform.anchorMin = new Vector2(1, 0);
+                    playerFrame.rectTransform.anchorMax = new Vector2(1, 0);
+                    playerFrame.rectTransform.pivot = new Vector2(1, 0);
+                    playerFrame.rectTransform.anchoredPosition = new Vector2(-20, 20);
+                }
+                break;
+
+            case 3:
+                if (tankIndex == 0)
+                {
+                    // Marco en la esquina inferior izquierda para el primer tanque
+                    playerFrame.rectTransform.anchorMin = new Vector2(0, 0);
+                    playerFrame.rectTransform.anchorMax = new Vector2(0, 0);
+                    playerFrame.rectTransform.pivot = new Vector2(0, 0);
+                    playerFrame.rectTransform.anchoredPosition = new Vector2(20, 20);
+                }
+                else if (tankIndex == 1)
+                {
+                    // Marco en la esquina inferior derecha para el segundo tanque
+                    playerFrame.rectTransform.anchorMin = new Vector2(1, 0);
+                    playerFrame.rectTransform.anchorMax = new Vector2(1, 0);
+                    playerFrame.rectTransform.pivot = new Vector2(1, 0);
+                    playerFrame.rectTransform.anchoredPosition = new Vector2(-20, 20);
+                }
+                else
+                {
+                    // Marco en la esquina superior central para el tercer tanque
+                    playerFrame.rectTransform.anchorMin = new Vector2(0.5f, 1);
+                    playerFrame.rectTransform.anchorMax = new Vector2(0.5f, 1);
+                    playerFrame.rectTransform.pivot = new Vector2(0.5f, 1);
+                    playerFrame.rectTransform.anchoredPosition = new Vector2(0, -20);
                 }
                 break;
         }

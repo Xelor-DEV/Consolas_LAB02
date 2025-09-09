@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
 {
     [Header("Data Configuration")]
     [SerializeField] private PlayerDataSO playerData;
+    [SerializeField] private PlayerConfigSO playerConfig;
 
     [Header("Tank Prefabs")]
     [SerializeField] private GameObject tankPrefab;
@@ -30,6 +31,7 @@ public class GameManager : MonoBehaviour
 
     public List<TankManager> activeTanks = new List<TankManager>();
     private ReadOnlyArray<InputDevice> allDevices;
+    private int remainingTanks;
 
     // Singleton pattern para fácil acceso
     public static GameManager Instance { get; private set; }
@@ -50,7 +52,37 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         InitializeGame();
-        SetupEventListeners();
+
+        if (playerConfig.isVersusMode == false)
+        {
+            SetupEventListeners();
+        }
+        else
+        {
+            remainingTanks = activeTanks.Count;
+        }
+    }
+
+    public void OnTankDestroyed(int tankNumber)
+    {
+        if (playerConfig.isVersusMode == false) return;
+
+        remainingTanks--;
+
+        if (remainingTanks <= 1)
+        {
+            // Find the last remaining tank
+            TankManager winner = activeTanks.FirstOrDefault(t => !t.IsDisabled);
+
+            if (winner != null)
+            {
+                // Set victory condition for versus mode
+                gameResultSO.victoryCondition = VictoryCondition.VersusWin;
+
+                // Trigger win event
+                OnWin.Invoke();
+            }
+        }
     }
 
     private void SetupEventListeners()

@@ -114,18 +114,24 @@ public class EnemyAI : MonoBehaviour
 
         foreach (Collider hit in hits)
         {
+            if (hit.gameObject == this.gameObject) continue;
+
             if (hit.CompareTag(playerTag))
             {
-                currentTarget = hit.transform;
-                isWandering = false;
-                return;
+                HealthManager healthManager = hit.GetComponent<HealthManager>();
+                if (healthManager != null)
+                {
+                    if (!healthManager.IsDead)
+                    {
+                        currentTarget = hit.transform;
+                        isWandering = false;
+                        return;
+                    }
+                }
             }
         }
 
-        if (currentTarget == null)
-        {
-            isWandering = true;
-        }
+        isWandering = true;
     }
 
     void FaceTarget()

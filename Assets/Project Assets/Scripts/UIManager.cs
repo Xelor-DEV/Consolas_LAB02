@@ -6,21 +6,33 @@ public class UIManager : MonoBehaviour
     [Header("References")]
     public TMP_Text timerText;
     public TMP_Text killsText;
+    public PlayerConfigSO playerConfig;
 
     [Header("Game Settings")]
     public float gameTime = 180f; // 3 minutos por defecto
+
 
     private float currentTime;
     private bool timerRunning = true;
 
     private void Start()
     {
+        if (playerConfig.isVersusMode == true)
+        {
+            return;
+        }
+
         currentTime = gameTime;
         UpdateTimerDisplay();
     }
 
     private void Update()
     {
+        if (playerConfig.isVersusMode == true)
+        {
+            return;
+        }
+
         if (timerRunning)
         {
             currentTime -= Time.deltaTime;
@@ -31,6 +43,7 @@ public class UIManager : MonoBehaviour
                 currentTime = 0;
                 timerRunning = false;
                 GameManager.Instance.OnTimeUp();
+                
             }
         }
     }

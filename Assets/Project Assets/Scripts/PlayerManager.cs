@@ -232,7 +232,16 @@ public class PlayerManager : MonoBehaviour
     {
         Debug.Log("Todos los jugadores están listos. Cargando escena de juego...");
         // Aquí cargarías tu escena de juego
-        SceneManager.LoadScene("Test");
+
+        if (playerConfig.isVersusMode == true)
+        {
+            SceneManager.LoadScene("Versus");
+        }
+        else
+        {
+            SceneManager.LoadScene("Test");
+        }
+        
     }
 
     // Método para manejar cambios en dispositivos conectados

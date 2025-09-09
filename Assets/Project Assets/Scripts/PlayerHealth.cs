@@ -11,6 +11,8 @@ public class PlayerHealth : HealthManager
         {
             tankManager.DisableTankControls();
             rb.isKinematic = true;
+
+            GameManager.Instance.OnTankDestroyed(tankManager.TankNumber);
         }
     }
 }

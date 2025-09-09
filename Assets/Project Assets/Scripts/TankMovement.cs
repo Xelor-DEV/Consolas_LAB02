@@ -1,17 +1,25 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 public class TankMovement : MonoBehaviour
 {
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
+    public float runSpeed = 10f;
     public float turnSpeed = 30f;
+    public bool isRunning = false;
+
+    [Header("PowerUp Settings")]
+    [SerializeField] private float speedBoostDuration = 5f;
 
     [Header("Component References")]
     [SerializeField] private Rigidbody tankRigidbody;
     [SerializeField] private TankManager tankManager;
 
     private Vector2 moveInput;
+    private float originalMoveSpeed;
+    private Coroutine speedBoostCoroutine;
 
     private void Awake()
     {
@@ -19,6 +27,8 @@ public class TankMovement : MonoBehaviour
         {
             tankRigidbody = GetComponent<Rigidbody>();
         }
+
+        originalMoveSpeed = moveSpeed;
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -35,7 +45,8 @@ public class TankMovement : MonoBehaviour
 
     private void HandleMovement()
     {
-        Vector3 moveDirection = transform.forward * (moveInput.y * moveSpeed) * Time.fixedDeltaTime;
+        float currentSpeed = isRunning ? runSpeed : moveSpeed;
+        Vector3 moveDirection = transform.forward * (moveInput.y * currentSpeed) * Time.fixedDeltaTime;
         tankRigidbody.MovePosition(tankRigidbody.position + moveDirection);
     }
 
@@ -44,5 +55,21 @@ public class TankMovement : MonoBehaviour
         float rotation = (moveInput.x * turnSpeed) * Time.fixedDeltaTime;
         Quaternion turnRotation = Quaternion.Euler(0f, rotation, 0f);
         tankRigidbody.MoveRotation(tankRigidbody.rotation * turnRotation);
+    }
+
+    public void ActivateSpeedBoost()
+    {
+        if (speedBoostCoroutine != null)
+        {
+            StopCoroutine(speedBoostCoroutine);
+        }
+        speedBoostCoroutine = StartCoroutine(SpeedBoostCoroutine());
+    }
+
+    private IEnumerator SpeedBoostCoroutine()
+    {
+        isRunning = true;
+        yield return new WaitForSeconds(speedBoostDuration);
+        isRunning = false;
     }
 }
