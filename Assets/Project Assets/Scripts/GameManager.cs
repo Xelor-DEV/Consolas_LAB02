@@ -174,7 +174,12 @@ public class GameManager : MonoBehaviour
 
         if (tankManager != null)
         {
-            tankManager.InitializeTank(tankNumber, totalTanks, tankIndex);
+            // Obtener ambos jugadores para este tanque
+            var driver = playerData.playerSelections.FirstOrDefault(ps => ps.tankNumber == tankNumber && ps.isDriver);
+            var gunner = playerData.playerSelections.FirstOrDefault(ps => ps.tankNumber == tankNumber && !ps.isDriver);
+
+            tankManager.InitializeTank(tankNumber, totalTanks, tankIndex, driver, gunner,
+                                     playerConfig.isVersusMode, playerData.tankColors[tankNumber - 1]);
             activeTanks.Add(tankManager);
         }
         else

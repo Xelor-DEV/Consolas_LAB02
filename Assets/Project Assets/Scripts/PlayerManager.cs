@@ -211,7 +211,8 @@ public class PlayerManager : MonoBehaviour
             playerCursors[playerNumber - 1].DeviceId,
             playerNumber,
             tankNumber,
-            isDriver
+            isDriver,
+            playerColors[playerNumber - 1]
         );
 
         return true;

@@ -1,4 +1,5 @@
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -13,15 +14,23 @@ public class TankManager : MonoBehaviour
     [SerializeField] private RectTransform healthBar;
     [SerializeField] private TankMovement tankMovement;
     [SerializeField] private TurretControl turretControl;
-    [SerializeField] private Image playerFrame;
+
+    [SerializeField] private TMP_Text playerNumber_Driver;
+    [SerializeField] private TMP_Text tankNumber_Driver;
+
+    [SerializeField] private TMP_Text playerNumber_Gunner;
+    [SerializeField] private TMP_Text tankNumber_Gunner;
+
+    [SerializeField] private RectTransform dataContainerDriver;
+    [SerializeField] private RectTransform dataContainerGunner;
 
     [Header("Configuración")]
     [SerializeField] private int tankNumber;
-    [SerializeField] private Color[] playerColors;
     private bool isDisabled = false;
 
     private InputDevice driverDevice;
     private InputDevice gunnerDevice;
+
     [Header("Trayectoria de Proyectil")]
     [SerializeField] private Transform launchPoint;
     [SerializeField] private float projectileSpeed = 30f;
@@ -33,16 +42,42 @@ public class TankManager : MonoBehaviour
     {
         SetupLaunchPoint();
         SetupTrajectoryLine();
-        ApplyTankColor();
     }
 
-    private void ApplyTankColor()
+    private void ApplyTankColor(PlayerSelection driver, PlayerSelection gunner, bool isVersusMode, Color tankColor)
     {
-        if (playerColors.Length > 0)
+        if (!isVersusMode) return;
+
+        // Para el conductor (driver)
+        if (driver != null)
         {
-            int index = tankNumber - 1;
-            int colorIndex = index % playerColors.Length;
-            playerFrame.color = playerColors[colorIndex];
+            if (playerNumber_Driver != null)
+            {
+                playerNumber_Driver.text = "Player " + driver.playerNumber.ToString();
+                playerNumber_Driver.color = driver.playerColor;
+            }
+
+            if (tankNumber_Driver != null)
+            {
+                tankNumber_Driver.text = "Tank " + driver.tankNumber.ToString();
+                tankNumber_Driver.color = tankColor;
+            }
+        }
+
+        // Para el artillero (gunner)
+        if (gunner != null)
+        {
+            if (playerNumber_Gunner != null)
+            {
+                playerNumber_Gunner.text = "Player " + gunner.playerNumber.ToString();
+                playerNumber_Gunner.color = gunner.playerColor;
+            }
+
+            if (tankNumber_Gunner != null)
+            {
+                tankNumber_Gunner.text = "Tank " + gunner.tankNumber.ToString();
+                tankNumber_Gunner.color = tankColor;
+            }
         }
     }
 
@@ -102,22 +137,16 @@ public class TankManager : MonoBehaviour
     {
         DrawTrajectory(); // Puedes condicionar esto si solo quieres mostrarlo al apuntar
     }
-    public void InitializeTank(int tankNumber, int totalTanks, int tankIndex)
+
+    public void InitializeTank(int tankNumber, int totalTanks, int tankIndex,
+                             PlayerSelection driver, PlayerSelection gunner,
+                             bool isVersusMode, Color tankColor)
     {
         this.tankNumber = tankNumber;
-
-        ApplyTankColor();
-
-        // Configurar cámaras según el número total de tanques
+        ApplyTankColor(driver, gunner, isVersusMode, tankColor);
         SetupSplitScreen(totalTanks, tankIndex);
-
-        // Configurar barra de vida según el número total de tanques
         SetupHealthBar(totalTanks, tankIndex);
-
-        // Configurar el marco del jugador según el número total de tanques
-        SetupPlayerFrame(totalTanks, tankIndex);
-
-        // Configurar audio listener (solo mantener uno)
+        SetupDataContainers(totalTanks, tankIndex);
         SetupAudioListener();
     }
 
@@ -166,69 +195,6 @@ public class TankManager : MonoBehaviour
                 {
                     driverCamera.rect = new Rect(2 * thirdWidth, 0.5f, thirdWidth, 0.5f);
                     gunnerCamera.rect = new Rect(2 * thirdWidth, 0, thirdWidth, 0.5f);
-                }
-                break;
-        }
-    }
-
-    private void SetupPlayerFrame(int totalTanks, int tankIndex)
-    {
-        if (playerFrame == null) return;
-
-        // Configurar posición del marco del jugador según el número de tanques
-        switch (totalTanks)
-        {
-            case 1:
-                // Marco en la esquina inferior izquierda para un solo tanque
-                playerFrame.rectTransform.anchorMin = new Vector2(0, 0);
-                playerFrame.rectTransform.anchorMax = new Vector2(0, 0);
-                playerFrame.rectTransform.pivot = new Vector2(0, 0);
-                playerFrame.rectTransform.anchoredPosition = new Vector2(20, 20);
-                break;
-
-            case 2:
-                if (tankIndex == 0)
-                {
-                    // Marco en la esquina inferior izquierda para el primer tanque
-                    playerFrame.rectTransform.anchorMin = new Vector2(0, 0);
-                    playerFrame.rectTransform.anchorMax = new Vector2(0, 0);
-                    playerFrame.rectTransform.pivot = new Vector2(0, 0);
-                    playerFrame.rectTransform.anchoredPosition = new Vector2(20, 20);
-                }
-                else
-                {
-                    // Marco en la esquina inferior derecha para el segundo tanque
-                    playerFrame.rectTransform.anchorMin = new Vector2(1, 0);
-                    playerFrame.rectTransform.anchorMax = new Vector2(1, 0);
-                    playerFrame.rectTransform.pivot = new Vector2(1, 0);
-                    playerFrame.rectTransform.anchoredPosition = new Vector2(-20, 20);
-                }
-                break;
-
-            case 3:
-                if (tankIndex == 0)
-                {
-                    // Marco en la esquina inferior izquierda para el primer tanque
-                    playerFrame.rectTransform.anchorMin = new Vector2(0, 0);
-                    playerFrame.rectTransform.anchorMax = new Vector2(0, 0);
-                    playerFrame.rectTransform.pivot = new Vector2(0, 0);
-                    playerFrame.rectTransform.anchoredPosition = new Vector2(20, 20);
-                }
-                else if (tankIndex == 1)
-                {
-                    // Marco en la esquina inferior derecha para el segundo tanque
-                    playerFrame.rectTransform.anchorMin = new Vector2(1, 0);
-                    playerFrame.rectTransform.anchorMax = new Vector2(1, 0);
-                    playerFrame.rectTransform.pivot = new Vector2(1, 0);
-                    playerFrame.rectTransform.anchoredPosition = new Vector2(-20, 20);
-                }
-                else
-                {
-                    // Marco en la esquina superior central para el tercer tanque
-                    playerFrame.rectTransform.anchorMin = new Vector2(0.5f, 1);
-                    playerFrame.rectTransform.anchorMax = new Vector2(0.5f, 1);
-                    playerFrame.rectTransform.pivot = new Vector2(0.5f, 1);
-                    playerFrame.rectTransform.anchoredPosition = new Vector2(0, -20);
                 }
                 break;
         }
@@ -296,6 +262,139 @@ public class TankManager : MonoBehaviour
                 }
                 break;
         }
+    }
+
+    private void SetupDataContainers(int totalTanks, int tankIndex)
+    {
+        if (dataContainerDriver == null || dataContainerGunner == null) return;
+
+        // Para el driver (siempre arriba) y gunner (siempre abajo)
+        // Pero posicionados según el número total de tanques y el índice
+        switch (totalTanks)
+        {
+            case 1:
+                SetDataContainerPosition(dataContainerDriver, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(20, -20));
+                SetDataContainerPosition(dataContainerGunner, new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector2(20, 20));
+                break;
+            case 2:
+                if (tankIndex == 0)
+                {
+                    SetDataContainerPosition(dataContainerDriver, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(20, -20));
+                    SetDataContainerPosition(dataContainerGunner, new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector2(20, 20));
+                }
+                else
+                {
+                    SetDataContainerPosition(dataContainerDriver, new Vector2(1, 1), new Vector2(1, 1), new Vector2(1, 1), new Vector2(-20, -20));
+                    SetDataContainerPosition(dataContainerGunner, new Vector2(1, 0), new Vector2(1, 0), new Vector2(1, 0), new Vector2(-20, 20));
+                }
+                break;
+            case 3:
+                if (tankIndex == 0)
+                {
+                    SetDataContainerPosition(dataContainerDriver, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(20, -20));
+                    SetDataContainerPosition(dataContainerGunner, new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector2(20, 20));
+                }
+                else if (tankIndex == 1)
+                {
+                    SetDataContainerPosition(dataContainerDriver, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -20));
+                    SetDataContainerPosition(dataContainerGunner, new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0, 20));
+                }
+                else
+                {
+                    SetDataContainerPosition(dataContainerDriver, new Vector2(1, 1), new Vector2(1, 1), new Vector2(1, 1), new Vector2(-20, -20));
+                    SetDataContainerPosition(dataContainerGunner, new Vector2(1, 0), new Vector2(1, 0), new Vector2(1, 0), new Vector2(-20, 20));
+                }
+                break;
+            case 4:
+                if (tankIndex == 0)
+                {
+                    SetDataContainerPosition(dataContainerDriver, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(20, -20));
+                    SetDataContainerPosition(dataContainerGunner, new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector2(20, 20));
+                }
+                else if (tankIndex == 1)
+                {
+                    SetDataContainerPosition(dataContainerDriver, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -20));
+                    SetDataContainerPosition(dataContainerGunner, new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0, 20));
+                }
+                else if (tankIndex == 2)
+                {
+                    SetDataContainerPosition(dataContainerDriver, new Vector2(1, 1), new Vector2(1, 1), new Vector2(1, 1), new Vector2(-20, -20));
+                    SetDataContainerPosition(dataContainerGunner, new Vector2(1, 0), new Vector2(1, 0), new Vector2(1, 0), new Vector2(-20, 20));
+                }
+                else
+                {
+                    SetDataContainerPosition(dataContainerDriver, new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(20, 0));
+                    SetDataContainerPosition(dataContainerGunner, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, 0));
+                }
+                break;
+            case 5:
+                if (tankIndex == 0)
+                {
+                    SetDataContainerPosition(dataContainerDriver, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(20, -20));
+                    SetDataContainerPosition(dataContainerGunner, new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector2(20, 20));
+                }
+                else if (tankIndex == 1)
+                {
+                    SetDataContainerPosition(dataContainerDriver, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -20));
+                    SetDataContainerPosition(dataContainerGunner, new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0, 20));
+                }
+                else if (tankIndex == 2)
+                {
+                    SetDataContainerPosition(dataContainerDriver, new Vector2(1, 1), new Vector2(1, 1), new Vector2(1, 1), new Vector2(-20, -20));
+                    SetDataContainerPosition(dataContainerGunner, new Vector2(1, 0), new Vector2(1, 0), new Vector2(1, 0), new Vector2(-20, 20));
+                }
+                else if (tankIndex == 3)
+                {
+                    SetDataContainerPosition(dataContainerDriver, new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(20, 0));
+                    SetDataContainerPosition(dataContainerGunner, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, 0));
+                }
+                else
+                {
+                    SetDataContainerPosition(dataContainerDriver, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-20, 0));
+                    SetDataContainerPosition(dataContainerGunner, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, 0));
+                }
+                break;
+            case 6:
+                if (tankIndex == 0)
+                {
+                    SetDataContainerPosition(dataContainerDriver, new Vector2(0, 1), new Vector2(0, 1), new Vector2(0, 1), new Vector2(20, -20));
+                    SetDataContainerPosition(dataContainerGunner, new Vector2(0, 0), new Vector2(0, 0), new Vector2(0, 0), new Vector2(20, 20));
+                }
+                else if (tankIndex == 1)
+                {
+                    SetDataContainerPosition(dataContainerDriver, new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0.5f, 1), new Vector2(0, -20));
+                    SetDataContainerPosition(dataContainerGunner, new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0.5f, 0), new Vector2(0, 20));
+                }
+                else if (tankIndex == 2)
+                {
+                    SetDataContainerPosition(dataContainerDriver, new Vector2(1, 1), new Vector2(1, 1), new Vector2(1, 1), new Vector2(-20, -20));
+                    SetDataContainerPosition(dataContainerGunner, new Vector2(1, 0), new Vector2(1, 0), new Vector2(1, 0), new Vector2(-20, 20));
+                }
+                else if (tankIndex == 3)
+                {
+                    SetDataContainerPosition(dataContainerDriver, new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(20, 0));
+                    SetDataContainerPosition(dataContainerGunner, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, 0));
+                }
+                else if (tankIndex == 4)
+                {
+                    SetDataContainerPosition(dataContainerDriver, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0, 0));
+                    SetDataContainerPosition(dataContainerGunner, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-20, 0));
+                }
+                else
+                {
+                    SetDataContainerPosition(dataContainerDriver, new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(20, 0));
+                    SetDataContainerPosition(dataContainerGunner, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-20, 0));
+                }
+                break;
+        }
+    }
+
+    private void SetDataContainerPosition(RectTransform container, Vector2 anchorMin, Vector2 anchorMax, Vector2 pivot, Vector2 anchoredPosition)
+    {
+        container.anchorMin = anchorMin;
+        container.anchorMax = anchorMax;
+        container.pivot = pivot;
+        container.anchoredPosition = anchoredPosition;
     }
 
     private void SetupAudioListener()
