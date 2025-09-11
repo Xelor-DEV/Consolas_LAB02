@@ -33,6 +33,8 @@ public class GameManager : MonoBehaviour
     private ReadOnlyArray<InputDevice> allDevices;
     private int remainingTanks;
 
+
+    public PlayerConfigSO PlayerConfig { get; }
     // Singleton pattern para fácil acceso
     public static GameManager Instance { get; private set; }
 
@@ -71,15 +73,16 @@ public class GameManager : MonoBehaviour
 
         if (remainingTanks <= 1)
         {
-            // Find the last remaining tank
+            // Buscar el último tanque activo
             TankManager winner = activeTanks.FirstOrDefault(t => !t.IsDisabled);
 
             if (winner != null)
             {
-                // Set victory condition for versus mode
+                // Establecer la condición de victoria y el número del tanque ganador
                 gameResultSO.victoryCondition = VictoryCondition.VersusWin;
+                gameResultSO.winningTankNumber = winner.TankNumber; // Añadir esta línea
 
-                // Trigger win event
+                // Disparar evento de victoria
                 OnWin.Invoke();
             }
         }

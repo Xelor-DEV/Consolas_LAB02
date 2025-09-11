@@ -13,6 +13,7 @@ public class TurretControl : MonoBehaviour
     [Header("Ammo Settings")]
     [SerializeField] private int initialAmmo = 10;
     [SerializeField] private int ammoPerPowerUp = 5;
+    [SerializeField] private bool unlimitedAmmo = false;
 
     [Header("References")]
     [SerializeField] private Transform muzzle;
@@ -20,15 +21,36 @@ public class TurretControl : MonoBehaviour
     [SerializeField] private TankManager tankManager;
     [SerializeField] private Transform cannon;
     [SerializeField] private TMP_Text ammo;
+    [SerializeField] private PlayerConfigSO playerConfig;
+
+    [Header("Vibration")]
+    [SerializeField] private VibrationConfig vibrationConfig;
 
     private Vector2 aimInput;
     private float currentPitch = 0f;
     private int currentAmmo;
+    private Gamepad gunnerGamepad;
 
     private void Start()
     {
+        if (tankManager != null)
+        {
+            unlimitedAmmo = !playerConfig.isVersusMode;
+        }
+
         currentAmmo = initialAmmo;
         UpdateAmmoUI();
+
+        if (tankManager?.GunnerDevice is Gamepad)
+        {
+            gunnerGamepad = tankManager.GunnerDevice as Gamepad;
+        }
+
+        // Inicializar la configuración de vibración
+        if (vibrationConfig != null)
+        {
+            vibrationConfig.Initialize(this);
+        }
     }
 
 
@@ -48,23 +70,49 @@ public class TurretControl : MonoBehaviour
     public void Shoot()
     {
         if (tankManager?.IsDisabled == true) return;
-        if (currentAmmo <= 0) return;
+        if (!unlimitedAmmo && currentAmmo <= 0) return;
 
         Instantiate(bulletPrefab, muzzle.position, muzzle.rotation);
-        currentAmmo--;
-        UpdateAmmoUI();
+
+        if (!unlimitedAmmo)
+        {
+            currentAmmo--;
+            UpdateAmmoUI();
+        }
+
+        // Aplicar vibración
+        if (vibrationConfig != null && gunnerGamepad != null)
+        {
+            vibrationConfig.TriggerVibration(gunnerGamepad);
+        }
+    }
+
+    private void OnDisable()
+    {
+        // Detener vibración si el objeto se desactiva
+        if (gunnerGamepad != null && vibrationConfig != null)
+        {
+            vibrationConfig.StopVibration(gunnerGamepad);
+        }
     }
 
     public void AddAmmo(int amount)
     {
-        currentAmmo += amount;
-        UpdateAmmoUI();
-    }
-    private void UpdateAmmoUI()
-    {
-        ammo.text = currentAmmo.ToString();
+        // Only add ammo in versus mode
+        if (!unlimitedAmmo)
+        {
+            currentAmmo += amount;
+            UpdateAmmoUI();
+        }
     }
 
+    private void UpdateAmmoUI()
+    {
+        if (ammo != null && !unlimitedAmmo)
+        {
+            ammo.text = currentAmmo.ToString();
+        }
+    }
 
     void Update()
     {
@@ -91,5 +139,9 @@ public class TurretControl : MonoBehaviour
         {
             return ammoPerPowerUp;
         }
+    }
+    public bool HasUnlimitedAmmo
+    {
+        get { return unlimitedAmmo; }
     }
 }

@@ -44,10 +44,8 @@ public class TankManager : MonoBehaviour
         SetupTrajectoryLine();
     }
 
-    private void ApplyTankColor(PlayerSelection driver, PlayerSelection gunner, bool isVersusMode, Color tankColor)
+    private void ApplyTankColor(PlayerSelection driver, PlayerSelection gunner, Color tankColor)
     {
-        if (!isVersusMode) return;
-
         // Para el conductor (driver)
         if (driver != null)
         {
@@ -143,7 +141,7 @@ public class TankManager : MonoBehaviour
                              bool isVersusMode, Color tankColor)
     {
         this.tankNumber = tankNumber;
-        ApplyTankColor(driver, gunner, isVersusMode, tankColor);
+        ApplyTankColor(driver, gunner, tankColor);
         SetupSplitScreen(totalTanks, tankIndex);
         SetupHealthBar(totalTanks, tankIndex);
         SetupDataContainers(totalTanks, tankIndex);

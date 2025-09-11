@@ -1177,6 +1177,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerConfig: {fileID: 11400000, guid: e36ebdb5aef70c54cb0c0f5ee8841781, type: 2}
   modeButtonText: {fileID: 506737050}
+  inputActionAsset: {fileID: -944628639613478452, guid: 94be01d651188e544946fc8ad64c4805, type: 3}
 --- !u!1 &1359876854
 GameObject:
   m_ObjectHideFlags: 0

@@ -17,9 +17,16 @@ public class TankMovement : MonoBehaviour
     [SerializeField] private Rigidbody tankRigidbody;
     [SerializeField] private TankManager tankManager;
 
+    [Header("Vibration")]
+    [SerializeField] private MovementVibrationConfig movementVibrationConfig;
+
     private Vector2 moveInput;
     private float originalMoveSpeed;
     private Coroutine speedBoostCoroutine;
+    private Gamepad driverGamepad;
+    private Coroutine vibrationCoroutine;
+    private float currentLowFreq;
+    private float currentHighFreq;
 
     private void Awake()
     {
@@ -29,6 +36,21 @@ public class TankMovement : MonoBehaviour
         }
 
         originalMoveSpeed = moveSpeed;
+    }
+
+    private void Start()
+    {
+        // Obtener el Gamepad del conductor
+        if (tankManager?.DriverDevice is Gamepad)
+        {
+            driverGamepad = tankManager.DriverDevice as Gamepad;
+        }
+
+        // Iniciar la corrutina de vibración
+        if (driverGamepad != null && movementVibrationConfig != null)
+        {
+            vibrationCoroutine = StartCoroutine(VibrationUpdateRoutine());
+        }
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -57,6 +79,31 @@ public class TankMovement : MonoBehaviour
         tankRigidbody.MoveRotation(tankRigidbody.rotation * turnRotation);
     }
 
+    private IEnumerator VibrationUpdateRoutine()
+    {
+        while (true)
+        {
+            if (driverGamepad != null && movementVibrationConfig != null)
+            {
+                bool isMoving = moveInput.magnitude > 0.1f;
+
+                // Obtener los valores objetivo de vibración
+                var targetVibration = movementVibrationConfig.GetVibrationValues(isMoving, isRunning);
+
+                // Suavizar la transición
+                currentLowFreq = Mathf.Lerp(currentLowFreq, targetVibration.low,
+                    Time.deltaTime * movementVibrationConfig.transitionSmoothness);
+                currentHighFreq = Mathf.Lerp(currentHighFreq, targetVibration.high,
+                    Time.deltaTime * movementVibrationConfig.transitionSmoothness);
+
+                // Aplicar al gamepad
+                driverGamepad.SetMotorSpeeds(currentLowFreq, currentHighFreq);
+            }
+
+            yield return null;
+        }
+    }
+
     public void ActivateSpeedBoost()
     {
         if (speedBoostCoroutine != null)
@@ -71,5 +118,19 @@ public class TankMovement : MonoBehaviour
         isRunning = true;
         yield return new WaitForSeconds(speedBoostDuration);
         isRunning = false;
+    }
+
+    private void OnDisable()
+    {
+        // Detener vibración si el objeto se desactiva
+        if (driverGamepad != null)
+        {
+            driverGamepad.SetMotorSpeeds(0f, 0f);
+        }
+
+        if (vibrationCoroutine != null)
+        {
+            StopCoroutine(vibrationCoroutine);
+        }
     }
 }
