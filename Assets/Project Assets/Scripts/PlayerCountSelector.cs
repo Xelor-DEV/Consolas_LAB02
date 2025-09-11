@@ -33,25 +33,35 @@ public class PlayerCountSelector : MonoBehaviour
 
         // Obtener dispositivos compatibles
         int compatibleDevices = CountCompatibleDevices();
+        int requiredPlayers = GetRequiredPlayers(option, compatibleDevices);
 
         // Validar selección según el modo
         if (playerConfig.isVersusMode)
         {
-            if (compatibleDevices < 4)
+            // Versus mode requiere múltiplos de 2 (cada tanque necesita 2 jugadores)
+            if (requiredPlayers % 2 != 0)
             {
-                Debug.LogWarning("Versus mode requires at least 4 compatible devices");
+                Debug.LogWarning("Versus mode requires an even number of players (each tank needs 2 players)");
                 return;
             }
 
-            if (option == MaxPlayersOption.Max2Players)
+            // Versus mode requiere al menos 2 tanques (4 jugadores)
+            if (requiredPlayers < 4)
             {
                 Debug.LogWarning("Versus mode requires at least 4 players (2 tanks)");
+                return;
+            }
+
+            // Verificar si hay suficientes dispositivos
+            if (compatibleDevices < requiredPlayers)
+            {
+                Debug.LogWarning($"Not enough compatible devices for versus mode. Required: {requiredPlayers}, Found: {compatibleDevices}");
                 return;
             }
         }
         else // Cooperative mode
         {
-            int requiredPlayers = GetRequiredPlayers(option, compatibleDevices);
+            // Verificar si hay suficientes dispositivos
             if (compatibleDevices < requiredPlayers)
             {
                 Debug.LogWarning($"Not enough compatible devices. Required: {requiredPlayers}, Found: {compatibleDevices}");
