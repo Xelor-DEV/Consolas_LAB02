@@ -610,7 +610,7 @@ MonoBehaviour:
     m_Bits: 1
   playerTag: Player
   attackRange: 7
-  fireRate: 3
+  fireRate: 1.5
   gunMuzzle: {fileID: 2835401368510659627}
   bulletPrefab: {fileID: 1243603124363673662, guid: b3d4e1e3bd23a4b46b7d49b7078bb746, type: 3}
   spawner: {fileID: 0}
@@ -633,6 +633,7 @@ MonoBehaviour:
   healthBar: {fileID: 2342451859281235966}
   currentHealth: 5
   maxHealth: 5
+  isDead: 0
   OnDeath:
     m_PersistentCalls:
       m_Calls:

@@ -6,6 +6,7 @@ public class Bullet : MonoBehaviour
     [SerializeField] private float speed = 20f; // Velocidad del proyectil
     [SerializeField] private string objective;
     [SerializeField] private float damage;
+    [SerializeField] private GameObject explosionPrefab;
 
     private Rigidbody rb;
 
@@ -22,16 +23,25 @@ public class Bullet : MonoBehaviour
         {
             HealthManager health = other.GetComponent<HealthManager>();
             health.Damage(damage);
-            Destroy(gameObject);
+            DestroyBullet();
         }
         else if (other.tag == "ground")
         {
-            Destroy(gameObject);
+            DestroyBullet();
         }
         else if (other.tag == "wall")
         {
             Destroy(other.gameObject);
-            Destroy(gameObject);
+            DestroyBullet();
         }
+    }
+
+    private void DestroyBullet()
+    {
+        if (explosionPrefab != null)
+        {
+            Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+        }
+        Destroy(gameObject);
     }
 }

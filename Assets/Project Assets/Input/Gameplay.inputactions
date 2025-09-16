@@ -166,8 +166,8 @@
             "bindingGroup": "Gamepads",
             "devices": [
                 {
-                    "devicePath": "<Gamepad>",
-                    "isOptional": true,
+                    "devicePath": "<XInputController>",
+                    "isOptional": false,
                     "isOR": false
                 }
             ]

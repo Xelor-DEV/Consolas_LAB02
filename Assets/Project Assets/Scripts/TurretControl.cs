@@ -15,6 +15,10 @@ public class TurretControl : MonoBehaviour
     [SerializeField] private int ammoPerPowerUp = 5;
     [SerializeField] private bool unlimitedAmmo = false;
 
+    [Header("Screen Shake")]
+    [SerializeField] private float shakeDuration = 0.3f;
+    [SerializeField] private float shakeMagnitude = 0.1f;
+
     [Header("References")]
     [SerializeField] private Transform muzzle;
     [SerializeField] private GameObject bulletPrefab;
@@ -30,6 +34,8 @@ public class TurretControl : MonoBehaviour
     private float currentPitch = 0f;
     private int currentAmmo;
     private Gamepad gunnerGamepad;
+
+    private CameraShake driverCameraShake;
 
     private void Start()
     {
@@ -50,6 +56,13 @@ public class TurretControl : MonoBehaviour
         if (vibrationConfig != null)
         {
             vibrationConfig.Initialize(this);
+        }
+
+        if (tankManager != null && tankManager.GunnerCamera != null)
+        {
+            driverCameraShake = tankManager.GunnerCamera.GetComponent<CameraShake>();
+            if (driverCameraShake == null)
+                driverCameraShake = tankManager.GunnerCamera.gameObject.AddComponent<CameraShake>();
         }
     }
 
@@ -73,6 +86,9 @@ public class TurretControl : MonoBehaviour
         if (!unlimitedAmmo && currentAmmo <= 0) return;
 
         Instantiate(bulletPrefab, muzzle.position, muzzle.rotation);
+
+        if (driverCameraShake != null)
+            driverCameraShake.TriggerShake(shakeDuration, shakeMagnitude);
 
         if (!unlimitedAmmo)
         {
@@ -125,7 +141,7 @@ public class TurretControl : MonoBehaviour
         if (cannon != null)
         {
             // Actualizar el ángulo de pitch con límites
-            currentPitch += aimInput.y * pitchSpeed * Time.deltaTime;
+            currentPitch -= aimInput.y * pitchSpeed * Time.deltaTime;
             currentPitch = Mathf.Clamp(currentPitch, minPitchAngle, maxPitchAngle);
 
             // Aplicar la rotación al cañón

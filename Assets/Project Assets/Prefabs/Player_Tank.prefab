@@ -485,8 +485,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthBar: {fileID: 1841522489913268320}
-  currentHealth: 15
-  maxHealth: 15
+  currentHealth: 20
+  maxHealth: 20
   isDead: 0
   OnDeath:
     m_PersistentCalls:
@@ -762,6 +762,8 @@ MonoBehaviour:
   initialAmmo: 10
   ammoPerPowerUp: 5
   unlimitedAmmo: 0
+  shakeDuration: 0.2
+  shakeMagnitude: 0.005
   muzzle: {fileID: 3064605995074559733}
   bulletPrefab: {fileID: 6555574501551586524, guid: f8b2ad6c5c7c30e4fa37f85c35dc5813, type: 3}
   tankManager: {fileID: 293087421919425095}
@@ -1024,6 +1026,7 @@ GameObject:
   - component: {fileID: 4392778621927067091}
   - component: {fileID: 4273477557485449229}
   - component: {fileID: 6321306323555143597}
+  - component: {fileID: 2991543220740738748}
   m_Layer: 0
   m_Name: GunnerCamera
   m_TagString: Untagged
@@ -1039,13 +1042,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3926772702182583338}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.7372774, y: 0, z: 0, w: 0.67559016}
-  m_LocalPosition: {x: 0, y: 0.0986, z: 0.0969}
-  m_LocalScale: {x: 0.14285712, y: 0.14285712, z: 0.14285712}
+  m_LocalRotation: {x: 0.76604444, y: 0, z: 0, w: 0.64278764}
+  m_LocalPosition: {x: 0, y: 0.171, z: 0.128}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5218619669263640848}
-  m_LocalEulerAnglesHint: {x: 95, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 100, y: 0, z: 0}
 --- !u!20 &4273477557485449229
 Camera:
   m_ObjectHideFlags: 0
@@ -1077,11 +1080,11 @@ Camera:
     y: 0
     width: 1
     height: 0.5
-  near clip plane: 0.3
-  far clip plane: 1000
-  field of view: 60.000004
+  near clip plane: 0.1
+  far clip plane: 5000
+  field of view: 40
   orthographic: 0
-  orthographic size: 5
+  orthographic size: 10
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -1141,6 +1144,18 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &2991543220740738748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3926772702182583338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a498fb52de294e4287cbabbd4383269, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4115353082905030122
 GameObject:
   m_ObjectHideFlags: 0
@@ -1239,6 +1254,7 @@ GameObject:
   - component: {fileID: 286426253024302595}
   - component: {fileID: 4333593421698395378}
   - component: {fileID: 8845893907873497329}
+  - component: {fileID: 4506609041513169021}
   m_Layer: 0
   m_Name: DriverCamera
   m_TagString: Untagged
@@ -1292,11 +1308,11 @@ Camera:
     y: 0.5
     width: 1
     height: 0.5
-  near clip plane: 0.3
-  far clip plane: 1000
-  field of view: 60.000004
+  near clip plane: 0.1
+  far clip plane: 5000
+  field of view: 40
   orthographic: 0
-  orthographic size: 5
+  orthographic size: 10
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -1364,6 +1380,18 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &4506609041513169021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4891023560296771114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a498fb52de294e4287cbabbd4383269, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5059580414126958111
 GameObject:
   m_ObjectHideFlags: 0

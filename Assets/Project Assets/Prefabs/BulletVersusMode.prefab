@@ -100,6 +100,7 @@ MonoBehaviour:
   speed: 30
   objective: Player
   damage: 1
+  explosionPrefab: {fileID: 725748389856807714, guid: 4bda94453d2ca7444a0fff05b2d425f5, type: 3}
 --- !u!1 &8540439932318544054
 GameObject:
   m_ObjectHideFlags: 0

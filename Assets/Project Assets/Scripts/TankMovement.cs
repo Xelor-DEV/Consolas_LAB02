@@ -90,11 +90,20 @@ public class TankMovement : MonoBehaviour
                 // Obtener los valores objetivo de vibración
                 var targetVibration = movementVibrationConfig.GetVibrationValues(isMoving, isRunning);
 
-                // Suavizar la transición
-                currentLowFreq = Mathf.Lerp(currentLowFreq, targetVibration.low,
-                    Time.deltaTime * movementVibrationConfig.transitionSmoothness);
-                currentHighFreq = Mathf.Lerp(currentHighFreq, targetVibration.high,
-                    Time.deltaTime * movementVibrationConfig.transitionSmoothness);
+                // Si no nos estamos moviendo, forzar la vibración a cero inmediatamente
+                if (!isMoving)
+                {
+                    currentLowFreq = 0f;
+                    currentHighFreq = 0f;
+                }
+                else
+                {
+                    // Solo aplicar suavizado cuando nos estamos moviendo
+                    currentLowFreq = Mathf.Lerp(currentLowFreq, targetVibration.low,
+                        Time.deltaTime * movementVibrationConfig.transitionSmoothness);
+                    currentHighFreq = Mathf.Lerp(currentHighFreq, targetVibration.high,
+                        Time.deltaTime * movementVibrationConfig.transitionSmoothness);
+                }
 
                 // Aplicar al gamepad
                 driverGamepad.SetMotorSpeeds(currentLowFreq, currentHighFreq);

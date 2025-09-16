@@ -214,7 +214,7 @@ PrefabInstance:
       objectReference: {fileID: 8354393018165108050}
     - target: {fileID: 5324213514372917640, guid: f63da4b27eb5f6b4f8faeddec05a2f6f, type: 3}
       propertyPath: initialAmmo
-      value: 20
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5324213514372917640, guid: f63da4b27eb5f6b4f8faeddec05a2f6f, type: 3}
       propertyPath: bulletPrefab
@@ -222,7 +222,7 @@ PrefabInstance:
       objectReference: {fileID: 6555574501551586524, guid: 113625334510f6a46aaf447a0dcc753b, type: 3}
     - target: {fileID: 5324213514372917640, guid: f63da4b27eb5f6b4f8faeddec05a2f6f, type: 3}
       propertyPath: ammoPerPowerUp
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5324213514372917640, guid: f63da4b27eb5f6b4f8faeddec05a2f6f, type: 3}
       propertyPath: vibrationConfig
@@ -290,11 +290,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8558702046288440040, guid: f63da4b27eb5f6b4f8faeddec05a2f6f, type: 3}
       propertyPath: maxHealth
-      value: 5
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 8558702046288440040, guid: f63da4b27eb5f6b4f8faeddec05a2f6f, type: 3}
       propertyPath: currentHealth
-      value: 5
+      value: 25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
