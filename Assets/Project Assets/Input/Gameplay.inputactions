@@ -106,12 +106,12 @@
             "actions": [
                 {
                     "name": "Navigation",
-                    "type": "PassThrough",
+                    "type": "Value",
                     "id": "2d62a8df-5155-4605-ae7c-3dd229b4588d",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Submit",
@@ -120,7 +120,7 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -166,8 +166,8 @@
             "bindingGroup": "Gamepads",
             "devices": [
                 {
-                    "devicePath": "<XInputController>",
-                    "isOptional": false,
+                    "devicePath": "<Gamepad>",
+                    "isOptional": true,
                     "isOR": false
                 }
             ]
